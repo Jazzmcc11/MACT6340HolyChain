@@ -2,7 +2,7 @@
   "name": "mact6340holychain",
   "version": "1.0.0",
   "description": "A personal NFT mint for an artist",
-  "type": "git",
+  "type": "module",
   "homepage": "https://github.com/Jazzmcc11/MACT6340HolyChain#readme",
   "bugs": {
     "url": "https://github.com/Jazzmcc11/MACT6340HolyChain/issues"
@@ -14,7 +14,9 @@
   "author": "Jazzmin McCoy",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx nodemon app.js",
+    "start": "node app.js"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
