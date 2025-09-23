@@ -1,0 +1,127 @@
+/* ===== base/reset ===== */
+html { box-sizing: border-box; }
+*, *::before, *::after { box-sizing: inherit; }
+
+/* ===== theme colors ===== */
+:root{
+  --color-primary:#6A0DAD;   /* Royal Purple */
+  --color-accent:#A41E34;    /* Crimson */
+  --color-gold:#FFD700;      /* Gold */
+  --color-dark:#1C1C1C;      /* Charcoal */
+  --color-light:#F9F7F1;     /* Ivory */
+}
+
+/* ===== global ===== */
+body{
+  background-color: var(--color-light);
+  color: var(--color-dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* keep Bootstrap dark areas on our exact tone */
+.navbar.bg-dark,
+footer.bg-dark{
+  background-color: var(--color-dark) !important;
+}
+
+/* link accents */
+a.link-primary{ color: var(--color-primary) !important; }
+a.link-primary:hover{ color: var(--color-accent) !important; }
+
+/* headings accent line */
+.section-title{
+  color: var(--color-primary);
+  letter-spacing:.2px;
+}
+.section-title::after{
+  content:"";
+  display:block;
+  width:72px; height:4px; margin-top:.5rem;
+  background: linear-gradient(90deg, var(--color-gold), var(--color-primary));
+  border-radius:2px;
+}
+
+/* ===== hero (splash) =====
+   uses your WIB2.png — ensure the file lives at /images/WIB2.png */
+.hero{
+  min-height: 60vh;
+  background: url("../images/WIB2.png") center/cover no-repeat;
+  position: relative;
+  color:#fff;
+  display:grid;
+  place-items:center;
+  text-align:center;
+}
+.hero::before{
+  content:"";
+  position:absolute; inset:0;
+  background: rgba(0,0,0,.45);       /* darken for readability */
+}
+.hero > .container{ position:relative; z-index:1; }
+.hero h1{ 
+  margin:0;
+  font-weight:800;
+  /* responsive size without media queries */
+  font-size: clamp(2rem, 4vw + 1rem, 3.25rem);
+}
+
+/* ===== buttons (Bootstrap overrides) ===== */
+.btn-primary{
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.btn-primary:hover,
+.btn-primary:focus{
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+.btn-outline-secondary{
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.btn-outline-secondary:hover{
+  background-color: var(--color-primary);
+  color:#fff;
+}
+.btn-outline-light:hover{
+  background-color: var(--color-gold);
+  color: var(--color-dark);
+  border-color: var(--color-gold);
+}
+
+/* ===== cards (featured project area) ===== */
+.card{
+  border: 0;
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.card:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0,0,0,.12);
+}
+.card-title{ color: var(--color-primary); }
+.card-img-top{
+  height: 220px;
+  object-fit: cover;
+}
+
+/* ===== about section ===== */
+#about{
+  background-color: #ffffffcc; /* subtle contrast against ivory */
+}
+#about img{
+  border-radius: 1rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,.08);
+}
+
+/* ===== footer ===== */
+footer a{ text-decoration: none; }
+footer a:hover{ color: var(--color-gold) !important; }
+
+/* ===== responsive tweaks ===== */
+@media (max-width: 576px){
+  .hero{ min-height: 50vh; }
+  .card-img-top{ height: 180px; }
+}
