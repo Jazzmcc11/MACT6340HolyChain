@@ -17,53 +17,71 @@ const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ---------- MIDDLEWARE ----------
+// Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// ---------- VIEW ENGINE ----------
+// Set EJS as the template engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // ---------- ROUTES ----------
 
-// 🏠 Home
+// Home
 app.get("/", (req, res) => {
-  res.render("index", {
-    pageTitle: "The Anointed Mixtape | Home",
-    page: "home",
-  });
+  res.render("index", { pageTitle: "Home" });
 });
 
-// 🎵 Projects
+// Projects
 app.get("/projects", (req, res) => {
-  res.render("projects", {
-    pageTitle: "The Anointed Mixtape | Projects",
-    page: "projects",
-  });
+  const projectArray = [
+    { image: "Delilah.png", title: "The Delilah Mixtape: Soft Hands, Sharp Intentions" },
+    { image: "Esther.png", title: "The Esther Mixtape: For Such a Time" },
+    { image: "Eve.png", title: "The Eve Mixtape: Vol. O.G." },
+    { image: "MM.png", title: "The Magdalene Mixtape: Vol. Hoe" },
+    { image: "MMH.png", title: "The Magdalene Mixtape: Vol. Healed" },
+    { image: "Ruth.png", title: "The Ruth Mixtape: Worth The Wait" },
+    { image: "Sarah.png", title: "The Sarah Mixtape: Legacy and Laughter" },
+  ];
+  res.render("projects", { pageTitle: "Projects", projectArray });
 });
 
-// ✉️ Contact
+// Individual Project Pages
+app.get("/project/:id", (req, res, next) => {
+  const projectArray = [
+    { image: "Delilah.png", title: "The Delilah Mixtape: Soft Hands, Sharp Intentions" },
+    { image: "Esther.png", title: "The Esther Mixtape: For Such a Time" },
+    { image: "Eve.png", title: "The Eve Mixtape: Vol. O.G." },
+    { image: "MM.png", title: "The Magdalene Mixtape: Vol. Hoe" },
+    { image: "MMH.png", title: "The Magdalene Mixtape: Vol. Healed" },
+    { image: "Ruth.png", title: "The Ruth Mixtape: Worth The Wait" },
+    { image: "Sarah.png", title: "The Sarah Mixtape: Legacy and Laughter" },
+  ];
+
+  const id = parseInt(req.params.id);
+  if (id < 1 || id > projectArray.length) {
+    const error = new Error("No project with that ID");
+    return next(error);
+  }
+
+  const project = projectArray[id - 1];
+  res.render("project", { pageTitle: project.title, project });
+});
+
+// Contact Page
 app.get("/contact", (req, res) => {
-  res.render("contact", {
-    pageTitle: "The Anointed Mixtape | Contact",
-    page: "contact",
-  });
+  res.render("contact", { pageTitle: "Contact" });
 });
 
-// 💎 Mint
+// Mint Page
 app.get("/mint", (req, res) => {
-  res.render("mint", {
-    pageTitle: "The Anointed Mixtape | Mint",
-    page: "mint",
-  });
+  res.render("mint", { pageTitle: "Mint" });
 });
 
 // ---------- EMAIL HANDLER ----------
 app.post("/mail", async (req, res) => {
   const { sub, txt } = req.body;
-
   try {
     const transporter = nodemailer.createTransport({
       host: process.env.MAIL_HOST,
@@ -84,21 +102,23 @@ app.post("/mail", async (req, res) => {
 
     res.json({ result: "success" });
   } catch (error) {
-    console.error("❌ Email error:", error);
+    console.error("Email error:", error);
     res.json({ result: "error" });
   }
 });
 
-// ---------- 404 FALLBACK ----------
-app.use((req, res) => {
-  res.status(404).render("404", {
-    pageTitle: "Page Not Found",
-    page: "404",
-  });
+// ---------- ERROR HANDLING ----------
+app.use((err, req, res, next) => {
+  console.error("Error:", err.message);
+  res.status(500).render("error", { pageTitle: "Error" });
 });
 
-// ---------- START SERVER ----------
+// 404 Fallback
+app.use((req, res) => {
+  res.status(404).render("404", { pageTitle: "Page Not Found" });
+});
+
+// Start Server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running → http://localhost:${PORT}`);
-  console.log(`📧 Using mail account: ${process.env.MAIL_USERNAME || "none"}`);
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });

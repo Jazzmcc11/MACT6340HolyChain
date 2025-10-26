@@ -144,3 +144,6 @@ footer a:hover{ color: var(--color-gold) !important; }
 @media (max-width: 576px){
   .hero{ min-height: 50vh; }
 }
+.spacer {
+  min-height: 75px;
+}

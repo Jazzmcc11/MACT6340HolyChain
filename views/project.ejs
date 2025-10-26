@@ -1,0 +1,14 @@
+<%- include("header") %>
+
+<main class="py-5 text-center">
+  <div class="container">
+    <h1 class="mb-4"><%= project.title %></h1>
+    <img src="/images/<%= project.image %>" alt="<%= project.title %>" class="img-fluid rounded shadow-sm mb-4" style="max-width:600px;">
+    <p class="lead">
+      This is the detailed page for <strong><%= project.title %></strong>.
+    </p>
+    <a href="/projects" class="btn btn-primary mt-3">← Back to Projects</a>
+  </div>
+</main>
+
+<%- include("footer") %>
