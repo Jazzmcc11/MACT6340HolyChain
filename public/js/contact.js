@@ -1,34 +1,51 @@
-// public/js/contact.js
-// Handles sending the contact form to /mail
+// /public/js/contact.js
+"use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.querySelector("form");
+  const form = document.querySelector("#contactForm");
+  const feedback = document.querySelector("#feedback");
+
+  if (!form) return;
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // grab values
-    const subject = document.querySelector("#subject")?.value || "Website Inquiry";
-    const message = document.querySelector("#message")?.value || "";
+    const firstName = document.querySelector("#firstName").value.trim();
+    const lastName = document.querySelector("#lastName").value.trim();
+    const email = document.querySelector("#email").value.trim();
+    const sub = document.querySelector("#subject").value.trim() || "Website Inquiry";
+    const txt = `
+      Name: ${firstName} ${lastName}
+      Email: ${email}
+
+      Message:
+      ${document.querySelector("#message").value.trim()}
+    `;
+
+    feedback.textContent = "⏳ Sending your message...";
+    feedback.className = "text-center mt-3 text-warning";
 
     try {
       const response = await fetch("/mail", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sub: subject, txt: message }),
+        body: JSON.stringify({ sub, txt }),
       });
 
       const data = await response.json();
 
       if (data.result === "success") {
-        alert("✅ Message sent successfully!");
-        window.location.href = "/thanks.html";
+        feedback.textContent = "✅ Message sent successfully!";
+        feedback.className = "text-center mt-3 text-success";
+        form.reset();
       } else {
-        alert("❌ Message failed to send. Please try again.");
+        feedback.textContent = "❌ Message failed to send. Please try again.";
+        feedback.className = "text-center mt-3 text-danger";
       }
-    } catch (err) {
-      console.error("Error:", err);
-      alert("⚠️ There was a network error. Try again later.");
+    } catch (error) {
+      console.error("Error:", error);
+      feedback.textContent = "⚠️ There was a network error. Try again later.";
+      feedback.className = "text-center mt-3 text-danger";
     }
   });
 });

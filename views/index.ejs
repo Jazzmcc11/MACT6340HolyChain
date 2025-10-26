@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= pageTitle || "The Anointed Mixtape | Home" %></title>
+
+  <meta name="description" content="The Anointed Mixtape — NFT series by Jazzmin McCoy, blending faith, music, and art." />
+
+  <!-- Favicon -->
+  <link rel="icon" href="/images/favicon.ico" />
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body>
+  <!-- ================== NAVBAR ================== -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-uppercase" href="/">The Anointed Mixtape</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link <%= page === 'home' ? 'active' : '' %>" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link <%= page === 'projects' ? 'active' : '' %>" href="/projects">Projects</a></li>
+          <li class="nav-item"><a class="nav-link <%= page === 'contact' ? 'active' : '' %>" href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ================== HERO SECTION ================== -->
+  <header class="hero text-center d-flex align-items-center justify-content-center">
+    <div class="container">
+      <h1 class="fw-bold display-4 mb-3 text-light">The Anointed Mixtape</h1>
+      <p class="lead text-light">Where biblical women meet rhythm, resilience, and reinvention.</p>
+      <a href="/projects" class="btn btn-outline-light btn-lg mt-3">Explore the Collection</a>
+    </div>
+  </header>
+
+  <!-- ================== FEATURED PROJECT ================== -->
+  <section id="featured" class="py-5">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-end mb-4">
+        <h2 class="section-title mb-0">Featured Project</h2>
+        <a class="link-primary fw-semibold" href="/projects">See all projects →</a>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-8 col-lg-6 mx-auto">
+          <div class="card h-100 shadow-sm rounded-4">
+            <img src="/images/MM.png" class="card-img-top" alt="The Magdalene Mixtape: Vol. Hoe" />
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">The Magdalene Mixtape: Vol. Hoe</h5>
+              <p class="card-text flex-grow-1">
+                A bold reimagining of Mary Magdalene — raw, sensual, and searching —  
+                exploring womanhood through rhythm, temptation, and redemption.
+              </p>
+              <div class="d-grid gap-2">
+                <a id="featured-btn" href="/projects" class="btn btn-primary">View All Projects</a>
+                <a href="/mint" class="btn btn-outline-secondary">Mint This Project</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================== ABOUT ME ================== -->
+  <section id="about" class="py-5 fade-in">
+    <div class="container text-center">
+      <h2 class="section-title mb-4">About the Artist</h2>
+      <div class="row align-items-center justify-content-center">
+        <div class="col-md-5 mb-4 mb-md-0">
+          <img id="about-img" src="/images/JM.png" alt="Jazzmin McCoy portrait" class="img-fluid rounded shadow" />
+        </div>
+        <div class="col-md-6 text-start">
+          <p class="lead">
+            I’m <strong>Jazzmin McCoy</strong> — creative technologist, storyteller, and Scholarly Sneakerhead.
+            Through <em>The Anointed Mixtape</em>, I remix faith and femininity using sound, symbolism, and soul.
+            Each project reimagines biblical women as modern icons, harmonizing spirituality with self-expression.
+          </p>
+          <a href="/contact" class="btn btn-primary mt-3">Connect with Me</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================== FOOTER ================== -->
+  <footer class="bg-dark text-white text-center py-3 mt-5">
+    <p class="mb-0 small">© <span id="year"></span> Jazzmin McCoy — The Anointed Mixtape NFT Series</p>
+  </footer>
+
+  <!-- ================== SCRIPTS ================== -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="/js/index.js"></script>
+</body>
+</html>

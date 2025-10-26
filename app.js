@@ -1,44 +1,104 @@
+// app.js
+"use strict";
+
 import express from "express";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
-import { sendMessage } from "./utils/utils.js";
+import nodemailer from "nodemailer";
 
+// Load environment variables
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
-// Fix directory path for ES modules
+// Fix __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Middleware
+// ---------- MIDDLEWARE ----------
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public"))); // Serves everything from /public
+app.use(express.static(path.join(__dirname, "public")));
 
-// 📨 Email endpoint
+// ---------- VIEW ENGINE ----------
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+// ---------- ROUTES ----------
+
+// 🏠 Home
+app.get("/", (req, res) => {
+  res.render("index", {
+    pageTitle: "The Anointed Mixtape | Home",
+    page: "home",
+  });
+});
+
+// 🎵 Projects
+app.get("/projects", (req, res) => {
+  res.render("projects", {
+    pageTitle: "The Anointed Mixtape | Projects",
+    page: "projects",
+  });
+});
+
+// ✉️ Contact
+app.get("/contact", (req, res) => {
+  res.render("contact", {
+    pageTitle: "The Anointed Mixtape | Contact",
+    page: "contact",
+  });
+});
+
+// 💎 Mint
+app.get("/mint", (req, res) => {
+  res.render("mint", {
+    pageTitle: "The Anointed Mixtape | Mint",
+    page: "mint",
+  });
+});
+
+// ---------- EMAIL HANDLER ----------
 app.post("/mail", async (req, res) => {
-  console.log("📬 Mail endpoint hit!");
-  console.log("Request body:", req.body);
+  const { sub, txt } = req.body;
 
   try {
-    const { sub, txt } = req.body;
+    const transporter = nodemailer.createTransport({
+      host: process.env.MAIL_HOST,
+      port: 587,
+      secure: false,
+      auth: {
+        user: process.env.MAIL_USERNAME,
+        pass: process.env.MAIL_PASSWORD,
+      },
+    });
 
-    console.log("Attempting to send email...");
-    await sendMessage(sub, txt);
+    await transporter.sendMail({
+      from: process.env.MAIL_USERNAME,
+      to: process.env.MAIL_USERNAME,
+      subject: sub,
+      text: txt,
+    });
 
-    console.log("✅ Message sent successfully via utils.js");
     res.json({ result: "success" });
   } catch (error) {
-    console.error("❌ Error sending mail:", error.message);
-    res.json({ result: "failure", error: error.message });
+    console.error("❌ Email error:", error);
+    res.json({ result: "error" });
   }
 });
 
-// ✅ Start the server
-app.listen(port, () => {
-  console.log(`🚀 Server running at http://localhost:${port}`);
-  console.log("🔐 MAIL_USERNAME:", process.env.MAIL_USERNAME);
-  console.log("🔐 MAIL_HOST:", process.env.MAIL_HOST);
+// ---------- 404 FALLBACK ----------
+app.use((req, res) => {
+  res.status(404).render("404", {
+    pageTitle: "Page Not Found",
+    page: "404",
+  });
+});
+
+// ---------- START SERVER ----------
+app.listen(PORT, () => {
+  console.log(`🚀 Server running → http://localhost:${PORT}`);
+  console.log(`📧 Using mail account: ${process.env.MAIL_USERNAME || "none"}`);
 });
