@@ -1,90 +1,122 @@
 <%- include("header") %>
 
-<header class="hero d-flex align-items-center justify-content-center text-center text-white bg-dark py-5">
-  <div class="container">
-    <h1 class="fw-bold mb-3">Let’s Connect</h1>
-    <p class="lead mb-0">Questions, collaborations, or feedback — I’d love to hear from you.</p>
-  </div>
-</header>
+<main class="container py-5" style="min-height: 80vh;">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-5">
+          <h1 class="text-center fw-bold mb-3" style="color: var(--text-color, #222);">
+            Let’s Connect 💌
+          </h1>
+          <p class="text-center text-muted mb-4">
+            Have a question, collaboration idea, or just want to say hi?  
+            Fill out the form below and I’ll get back to you soon.
+          </p>
 
-<section id="contact" class="py-5">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-8 col-lg-6">
-        <form id="contactForm" method="POST" action="/mail" class="p-4 bg-light text-dark rounded shadow">
-          <div class="row mb-3">
-            <div class="col">
-              <label for="firstName" class="form-label fw-semibold">First Name</label>
-              <input type="text" id="firstName" name="firstName" class="form-control" placeholder="First name" required />
+          <form id="contactForm" action="/contact" method="POST">
+            <div class="mb-3">
+              <label for="name" class="form-label fw-semibold">Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                name="name"
+                placeholder="Your name"
+                required
+              />
             </div>
-            <div class="col">
-              <label for="lastName" class="form-label fw-semibold">Last Name</label>
-              <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last name" required />
+
+            <div class="mb-3">
+              <label for="email" class="form-label fw-semibold">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                placeholder="Your email address"
+                required
+              />
             </div>
-          </div>
 
-          <div class="mb-3">
-            <label for="email" class="form-label fw-semibold">Email Address</label>
-            <input type="email" id="email" name="email" class="form-control" placeholder="you@example.com" required />
-          </div>
+            <div class="mb-3">
+              <label for="message" class="form-label fw-semibold">Message</label>
+              <textarea
+                class="form-control"
+                id="message"
+                name="message"
+                rows="5"
+                placeholder="Write your message here..."
+                required
+              ></textarea>
+            </div>
 
-          <div class="mb-3">
-            <label for="subject" class="form-label fw-semibold">Subject</label>
-            <input type="text" id="subject" name="sub" class="form-control" placeholder="Enter your subject" required />
-          </div>
+            <button type="submit" class="btn btn-dark w-100 mt-2">
+              Send Message
+            </button>
 
-          <div class="mb-3">
-            <label for="message" class="form-label fw-semibold">Message</label>
-            <textarea id="message" name="txt" class="form-control" rows="6" placeholder="Type your message..." required></textarea>
-          </div>
+            <!-- Loader -->
+            <div class="loader text-center mt-3" id="loader">
+              <div class="hourglass"></div>
+              <p class="text-muted mt-2">Sending your message...</p>
+            </div>
+          </form>
 
-          <button type="submit" class="btn btn-primary w-100 fw-semibold">Send Message</button>
-        </form>
+          <% if (successMessage) { %>
+            <div class="alert alert-success text-center mt-4"><%= successMessage %></div>
+          <% } %>
 
-        <div id="feedback" class="text-center mt-3 fw-semibold"></div>
+          <% if (errorMessage) { %>
+            <div class="alert alert-danger text-center mt-4"><%= errorMessage %></div>
+          <% } %>
+        </div>
       </div>
     </div>
   </div>
-</section>
+</main>
+
+<style>
+  /* Reuse your site’s variables (fallbacks provided) */
+  body {
+    background-color: var(--background-color, #fafafa);
+    color: var(--text-color, #222);
+  }
+
+  .card {
+    border-radius: 16px;
+  }
+
+  /* Hourglass loader styled to match site accent color */
+  .loader {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hourglass {
+    border: 4px solid var(--accent-color, #d62828);
+    border-top: 4px solid transparent;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>
 
 <script>
-  const form = document.querySelector("#contactForm");
-  const feedback = document.querySelector("#feedback");
+  const form = document.getElementById("contactForm");
+  const loader = document.getElementById("loader");
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const sub = document.querySelector("#subject").value.trim();
-    const txt = `
-    Name: ${document.querySelector("#firstName").value} ${document.querySelector("#lastName").value}
-    Email: ${document.querySelector("#email").value}
-    Message:
-    ${document.querySelector("#message").value}
-    `;
-
-    feedback.textContent = "⏳ Sending...";
-    feedback.className = "text-warning";
-
-    try {
-      const response = await fetch("/mail", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sub, txt }),
-      });
-
-      const data = await response.json();
-      if (data.result === "success") {
-        feedback.textContent = "✅ Message sent!";
-        feedback.className = "text-success";
-        form.reset();
-      } else {
-        feedback.textContent = "❌ Message failed to send.";
-        feedback.className = "text-danger";
-      }
-    } catch (error) {
-      feedback.textContent = "⚠️ Could not reach the server.";
-      feedback.className = "text-danger";
-    }
+  form.addEventListener("submit", () => {
+    loader.style.display = "flex";
   });
 </script>
 

@@ -1,83 +1,146 @@
 import express from "express";
 import path from "path";
-import { fileURLToPath } from "url";
 import dotenv from "dotenv";
-import * as db from "./utils/database.js"; // imports connect() & getAllProjects()
+import { fileURLToPath } from "url";
+import nodemailer from "nodemailer";
+import { getAllProjects } from "./utils/database.js";
 
-// ================================
-// SETUP
-// ================================
-dotenv.config(); // Load environment variables
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Support ES Modules for __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const app = express();
-const PORT = 3000;
-
-// Log environment test
-console.log("🌿 ENV CHECK:", process.env.DB_USER, process.env.DB_NAME);
-
-// ================================
-// VIEW ENGINE SETUP
-// ================================
+// ===============================
+// ⚙️ Middleware
+// ===============================
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.urlencoded({ extended: true })); // for POST form data
 
-app.get("/", async (req, res, next) => {
+// ===============================
+// 🏠 Home Page
+// ===============================
+app.get("/", async (req, res) => {
   try {
-    await db.connect(); // Connect to MySQL
-    const projects = await db.getAllProjects(); // Fetch rows from DB
-    console.log("✅ Projects from DB:", projects);
-
-    res.render("index", {
-      data: projects,
-      pageTitle: "Home",
-    });
-  } catch (err) {
-    console.error("❌ Error loading projects:", err);
-    next(err);
+    const projects = await getAllProjects();
+    res.render("index", { pageTitle: "Home", projects });
+  } catch (error) {
+    console.error("❌ Error loading home page:", error.message);
+    res.status(500).send("Something went wrong loading the home page.");
   }
 });
 
-// PROJECTS PAGE
-app.get("/projects", async (req, res, next) => {
+// ===============================
+// 💿 Projects Page
+// ===============================
+app.get("/projects", async (req, res) => {
   try {
-    await db.connect();
-    const projects = await db.getAllProjects();
-
+    const projectArray = await getAllProjects();
     res.render("projects", {
-      data: projects,
       pageTitle: "Projects",
+      projectArray,
     });
-  } catch (err) {
-    console.error("❌ Error loading /projects:", err);
-    next(err);
+  } catch (error) {
+    console.error("❌ Error loading projects:", error.message);
+    res.status(500).send("Error loading projects.");
   }
 });
 
-// ABOUT PAGE
-app.get("/about", (req, res) => {
-  res.render("about", { pageTitle: "About" });
+// ===============================
+// 🪙 Mint Page
+// ===============================
+app.get("/mint", (req, res) => {
+  res.render("mint", { pageTitle: "Mint NFT" });
 });
 
-// CONTACT PAGE
+// ===============================
+// ✉️ Contact Page (GET)
+// ===============================
 app.get("/contact", (req, res) => {
-  res.render("contact", { pageTitle: "Contact" });
+  res.render("contact", {
+    pageTitle: "Contact",
+    successMessage: null,
+    errorMessage: null,
+  });
 });
 
-// ================================
-// ERROR HANDLING
-// ================================
+// ===============================
+// 📤 Contact Page (POST - Send Email)
+// ===============================
+app.post("/contact", async (req, res) => {
+  const { name, email, message } = req.body;
+
+  try {
+    console.log("🚀 Attempting to send email via iCloud...");
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.MAIL_HOST,
+      port: Number(process.env.MAIL_PORT),
+      secure: false, // iCloud uses STARTTLS on port 587
+      auth: {
+        user: process.env.MAIL_USERNAME,
+        pass: process.env.MAIL_PASSWORD,
+      },
+      tls: {
+        ciphers: "SSLv3",
+        rejectUnauthorized: false,
+      },
+      debug: true,
+    });
+
+    // Verify SMTP connection
+    await transporter.verify();
+    console.log("✅ iCloud SMTP verified successfully.");
+
+    const mailOptions = {
+      from: `"${name}" <${process.env.MAIL_USERNAME}>`,
+      to: process.env.MESSAGE_TO,
+      replyTo: email,
+      subject: `New message from ${name}`,
+      text: `
+      Name: ${name}
+      Email: ${email}
+
+      Message:
+      ${message}
+      `,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("✅ Email sent successfully:", info.response);
+
+    res.render("contact", {
+      pageTitle: "Contact",
+      successMessage: "✅ Your message was sent successfully!",
+      errorMessage: null,
+    });
+  } catch (error) {
+    console.error("❌ Email send failed:", error.message);
+    res.render("contact", {
+      pageTitle: "Contact",
+      successMessage: null,
+      errorMessage:
+        "⚠️ There was a problem sending your message. Please try again later.",
+    });
+  }
+});
+
+// ===============================
+// 🧱 Error Handling Middleware
+// ===============================
 app.use((err, req, res, next) => {
-  console.error("🚨 Server Error:", err.message);
-  res.status(500).send("Something went wrong on the server.");
+  console.error("🔥 Unhandled Server Error:", err);
+  res.status(500).send("Server Error: Something went wrong!");
 });
 
-// ================================
-// START SERVER
-// ================================
+// ===============================
+// 🚀 Start Server
+// ===============================
 app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log(`✅ Server running at http://localhost:${PORT}`);
 });
