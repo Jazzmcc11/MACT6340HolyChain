@@ -1,0 +1,5 @@
+SELECT * FROM projects;
+SHOW DATABASES;
+USE GenartNFT;
+SHOW TABLES;
+SELECT * FROM projects;
