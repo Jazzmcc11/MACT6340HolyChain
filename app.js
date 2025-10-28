@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import path from "path";
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
@@ -9,6 +10,8 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(cors());
 
 // Support ES Modules for __dirname
 const __filename = fileURLToPath(import.meta.url);
