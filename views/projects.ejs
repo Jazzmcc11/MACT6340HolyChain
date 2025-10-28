@@ -4,36 +4,11 @@
   <div class="container text-center">
     <h1 class="mb-4">The Mixtape Projects</h1>
 
-    <div class="row justify-content-center">
+    <!-- Fade-in animation applied here -->
+    <div class="row justify-content-center fadein">
       <% if (projectArray && projectArray.length > 0) { %>
         <% projectArray.forEach((item) => { %>
-          <div class="col-md-4 mb-4">
-            <div class="card shadow-sm h-100 border-0">
-
-              <% if (item.image) { %>
-                <img 
-                  src="/images/<%= item.image %>" 
-                  class="card-img-top rounded-top" 
-                  alt="<%= item.title %>" 
-                  style="height: 300px; object-fit: cover;"
-                >
-              <% } else { %>
-                <div class="bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
-                  <span class="text-muted">No image available</span>
-                </div>
-              <% } %>
-
-              <div class="card-body">
-                <h5 class="card-title fw-bold"><%= item.title %></h5>
-                <% if (item.description) { %>
-                  <p class="card-text"><%= item.description %></p>
-                <% } %>
-                <% if (item.link) { %>
-                  <a href="<%= item.link %>" target="_blank" class="btn btn-outline-dark mt-2">View Project</a>
-                <% } %>
-              </div>
-            </div>
-          </div>
+          <%- include("partials/projectCard", { item: item }) %>
         <% }) %>
       <% } else { %>
         <p>No projects found in the database.</p>

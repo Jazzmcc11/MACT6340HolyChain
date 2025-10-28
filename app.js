@@ -22,16 +22,26 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true })); // for POST form data
 
-// ===============================
-// 🏠 Home Page
-// ===============================
-app.get("/", async (req, res) => {
+// ✅ Home Page – now shows a random featured project
+app.get("/", async (req, res, next) => {
   try {
     const projects = await getAllProjects();
-    res.render("index", { pageTitle: "Home", projects });
+
+    // Pick a random project if there are any
+    let featuredProject = null;
+    if (projects.length > 0) {
+      const randomIndex = Math.floor(Math.random() * projects.length);
+      featuredProject = projects[randomIndex];
+    }
+
+    res.render("index", {
+      pageTitle: "Home",
+      featuredProject,   // pass the random one
+      projects,          // still pass full array if you ever want it
+    });
   } catch (error) {
-    console.error("❌ Error loading home page:", error.message);
-    res.status(500).send("Something went wrong loading the home page.");
+    console.error("Server Error:", error.message);
+    res.status(500).send("Something went wrong on the server.");
   }
 });
 
