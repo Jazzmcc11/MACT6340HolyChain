@@ -7,7 +7,12 @@
       <h1 class="mb-2"><%= project.title %></h1>
 
       <% if (project.playlist_url) { %>
-        <a class="btn btn-primary mt-2" href="<%= project.playlist_url %>" target="_blank" rel="noopener">
+        <a
+          class="btn btn-primary mt-2"
+          href="<%= project.playlist_url %>"
+          target="_blank"
+          rel="noopener"
+        >
           🎧 Listen to the Playlist
         </a>
       <% } %>
@@ -18,12 +23,14 @@
       <div class="col-lg-6">
         <% if (project.image) { %>
           <img
-            src="/images/<%= project.image %>"
+            src="<%= project.image.startsWith('http') ? project.image : ('/images/' + project.image) %>"
             class="img-fluid rounded shadow-sm"
             alt="<%= project.title %> cover image"
           >
         <% } else { %>
-          <div class="p-4 border rounded text-muted">No main image found.</div>
+          <div class="p-4 border rounded text-muted">
+            No main image found.
+          </div>
         <% } %>
       </div>
 
@@ -48,7 +55,9 @@
           </div>
         <% } %>
 
-        <a href="/projects" class="btn btn-outline-secondary mt-3">← Back to All Projects</a>
+        <a href="/projects" class="btn btn-outline-secondary mt-3">
+          ← Back to All Projects
+        </a>
       </div>
     </div>
 
@@ -58,7 +67,7 @@
         <h5 class="mb-3 text-center">Visual</h5>
         <div class="text-center">
           <img
-            src="/images/<%= project.secondary_image %>"
+            src="<%= project.secondary_image.startsWith('http') ? project.secondary_image : ('/images/' + project.secondary_image) %>"
             class="img-fluid rounded shadow-sm"
             alt="<%= project.title %> supporting visual"
             style="max-width: 900px;"

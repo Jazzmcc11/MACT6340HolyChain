@@ -92,13 +92,6 @@ app.get("/projects/:id", async (req, res) => {
 });
 
 // ===============================
-// 🪙 Mint Page
-// ===============================
-app.get("/mint", (req, res) => {
-  res.render("mint", { pageTitle: "Mint NFT" });
-});
-
-// ===============================
 // ✉️ Contact Page
 // ===============================
 app.get("/contact", (req, res) => {

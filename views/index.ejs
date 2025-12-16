@@ -27,15 +27,18 @@
           <div class="card h-100 shadow-sm">
             <% if (featuredProject.image) { %>
               <img 
-                src="/images/<%= featuredProject.image %>" 
+                src="<%= featuredProject.image.startsWith('http') ? featuredProject.image : ('/images/' + featuredProject.image) %>"
                 class="card-img-top" 
                 alt="<%= featuredProject.title %>">
             <% } %>
+
             <div class="card-body d-flex flex-column">
               <h5 class="card-title"><%= featuredProject.title %></h5>
+
               <% if (featuredProject.description) { %>
                 <p class="card-text flex-grow-1"><%= featuredProject.description %></p>
               <% } %>
+
               <div class="d-grid gap-2">
                 <a href="/projects" class="btn btn-primary">View Project</a>
                 <a href="/mint" class="btn btn-outline-secondary">Mint an Edition</a>
@@ -114,4 +117,3 @@
 
 <%- include("footer") %>
 <script src="/js/index.js"></script>
-
