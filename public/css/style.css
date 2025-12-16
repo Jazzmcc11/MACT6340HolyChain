@@ -147,3 +147,24 @@ footer a:hover{ color: var(--color-gold) !important; }
 .spacer {
   min-height: 75px;
 }
+/* =====================
+   Fade-In Animation
+===================== */
+
+@keyframes fadeInAnimation {
+  0% {
+    opacity: 0;          /* fully transparent */
+    transform: translateY(10px); /* optional gentle upward slide */
+  }
+  100% {
+    opacity: 1;          /* fully visible */
+    transform: translateY(0);
+  }
+}
+
+.fadein {
+  animation-name: fadeInAnimation;
+  animation-duration: 2s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}

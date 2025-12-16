@@ -1,0 +1,7 @@
+CREATE DATABASE IF NOT EXISTS holychain_db;
+USE holychain_db;
+
+CREATE TABLE projects (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100)
+);
