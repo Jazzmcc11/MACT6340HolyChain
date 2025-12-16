@@ -1,25 +1,74 @@
 <%- include("header") %>
 
-<main class="py-5 text-center">
+<main class="py-5">
   <div class="container">
-    <h1 class="mb-4"><%= project.title %></h1>
-    <p class="lead"><%= project.description %></p>
 
-    <% if (project.playlist_url) { %>
-      <p class="mt-3">
-        <a href="<%= project.playlist_url %>" 
-           target="_blank" 
-           rel="noopener noreferrer" 
-           class="btn btn-success">
-          🎧 Open Playlist
+    <div class="text-center mb-4">
+      <h1 class="mb-2"><%= project.title %></h1>
+
+      <% if (project.playlist_url) { %>
+        <a class="btn btn-primary mt-2" href="<%= project.playlist_url %>" target="_blank" rel="noopener">
+          🎧 Listen to the Playlist
         </a>
-      </p>
+      <% } %>
+    </div>
+
+    <div class="row g-4 align-items-start">
+      <!-- MAIN IMAGE -->
+      <div class="col-lg-6">
+        <% if (project.image) { %>
+          <img
+            src="/images/<%= project.image %>"
+            class="img-fluid rounded shadow-sm"
+            alt="<%= project.title %> cover image"
+          >
+        <% } else { %>
+          <div class="p-4 border rounded text-muted">No main image found.</div>
+        <% } %>
+      </div>
+
+      <!-- TEXT CONTENT -->
+      <div class="col-lg-6">
+        <% if (project.blurb) { %>
+          <div class="mb-3">
+            <h5 class="mb-2">About this chapter</h5>
+            <p class="lead"><%= project.blurb %></p>
+          </div>
+        <% } else if (project.description) { %>
+          <div class="mb-3">
+            <h5 class="mb-2">About this chapter</h5>
+            <p class="lead"><%= project.description %></p>
+          </div>
+        <% } %>
+
+        <% if (project.walkout_song) { %>
+          <div class="mb-3">
+            <h5 class="mb-2">Walk-Out Song</h5>
+            <p class="mb-0"><%= project.walkout_song %></p>
+          </div>
+        <% } %>
+
+        <a href="/projects" class="btn btn-outline-secondary mt-3">← Back to All Projects</a>
+      </div>
+    </div>
+
+    <!-- SECONDARY IMAGE -->
+    <% if (project.secondary_image) { %>
+      <div class="mt-5">
+        <h5 class="mb-3 text-center">Visual</h5>
+        <div class="text-center">
+          <img
+            src="/images/<%= project.secondary_image %>"
+            class="img-fluid rounded shadow-sm"
+            alt="<%= project.title %> supporting visual"
+            style="max-width: 900px;"
+          >
+        </div>
+      </div>
     <% } %>
 
-    <a href="/projects" class="btn btn-primary mt-3">← Back to All Projects</a>
   </div>
 </main>
 
 <%- include("footer") %>
 <script src="/js/index.js"></script>
-
